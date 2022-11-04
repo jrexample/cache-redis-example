@@ -24,13 +24,14 @@ const getDataFromDatabase = async () => {
 
   app.get('/', cacheMiddleware, async (req, res) => {
     const data = await getDataFromDatabase();
+    const response = {
+      data,
+    };
 
     const key = generateCacheKey(req);
-    await redisClient.setEx(key, ONE_MINUTE, JSON.stringify(data));
+    await redisClient.setEx(key, ONE_MINUTE, JSON.stringify(response));
 
-    res.json({
-      data,
-    });
+    res.json(response);
   });
 
   app.listen(port, () => {
